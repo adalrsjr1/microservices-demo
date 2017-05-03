@@ -114,6 +114,8 @@ services:
 #    image: weaveworksdemos/queue-master
     image: adalrsjr1/queue-master
     hostname: queue-master
+    environment:
+      - DOCKER_HOST=198.162.52.145
 #    volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock
     restart: always
