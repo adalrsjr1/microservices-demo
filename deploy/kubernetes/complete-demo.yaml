@@ -470,7 +470,7 @@ spec:
               - SETGID
               - SETUID
               - DAC_OVERRIDE
-          readOnlyRootFilesystem: true
+          readOnlyRootFilesystem: false
 ---
 apiVersion: v1
 kind: Service

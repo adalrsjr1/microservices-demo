@@ -4,12 +4,16 @@ services:
   front-end:
     image: weaveworksdemos/front-end
     hostname: front-end
+    networks:
+      - weavedemo_backoffice
     restart: always
     cap_drop:
       - all
     read_only: true
   edge-router:
     image: weaveworksdemos/edge-router
+    networks:
+      - weavedemo_backoffice
     ports:
       - '80:80'
       - '8080:8080'
@@ -29,6 +33,8 @@ services:
   catalogue:
     image: weaveworksdemos/catalogue
     hostname: catalogue
+    networks:
+      - weavedemo_backoffice
     restart: always
     cap_drop:
       - all
@@ -40,6 +46,8 @@ services:
   catalogue-db:
     image: weaveworksdemos/catalogue-db
     hostname: catalogue-db
+    networks:
+      - weavedemo_backoffice
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -48,6 +56,8 @@ services:
   carts:
     image: weaveworksdemos/carts
     hostname: carts
+    networks:
+      - weavedemo_backoffice
     restart: always
     cap_drop:
       - all
@@ -60,6 +70,8 @@ services:
       - JAVA_OPTS=-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
   carts-db:
     image: mongo
+    networks:
+      - weavedemo_backoffice
     hostname: carts-db
     restart: always
     cap_drop:
@@ -73,6 +85,8 @@ services:
       - /tmp:rw,noexec,nosuid
   orders:
     image: weaveworksdemos/orders
+    networks:
+      - weavedemo_backoffice
     hostname: orders
     restart: always
     cap_drop:
@@ -86,6 +100,8 @@ services:
       - JAVA_OPTS=-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
   orders-db:
     image: mongo
+    networks:
+      - weavedemo_backoffice
     hostname: orders-db
     restart: always
     cap_drop:
@@ -100,6 +116,8 @@ services:
   shipping:
     image: weaveworksdemos/shipping
     hostname: shipping
+    networks:
+      - weavedemo_backoffice
     restart: always
     cap_drop:
       - all
@@ -113,23 +131,33 @@ services:
   queue-master:
 #    image: weaveworksdemos/queue-master
     image: adalrsjr1/queue-master
+    networks:
+      - weavedemo_backoffice
     hostname: queue-master
     environment:
       - DOCKER_HOST=kay.cs.ubc.ca
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
+      - DOCKER_CERT_PATH=/usr/src/app/certs
+      - DOCKER_TLS_VERIFY=1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/adalrsjr1/.certs:/usr/src/app/certs
     restart: always
-    cap_drop:
-      - all
-    cap_add:
-      - NET_BIND_SERVICE
-    read_only: true
+#    cap_drop:
+#      - all
+#    cap_add:
+#      - NET_BIND_SERVICE
+#    read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid
   rabbitmq:
     image: rabbitmq:3
     hostname: rabbitmq
+    networks:
+      - weavedemo_backoffice
     restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
     cap_drop:
       - all
     cap_add:
@@ -137,9 +165,11 @@ services:
       - SETGID
       - SETUID
       - DAC_OVERRIDE
-    read_only: true
+#    read_only: true
   payment:
     image: weaveworksdemos/payment
+    networks:
+      - weavedemo_backoffice
     hostname: payment
     restart: always
     cap_drop:
@@ -151,6 +181,8 @@ services:
       - ZIPKIN=http://zipkin:9411/api/v1/spans
   user:
     image: weaveworksdemos/user
+    networks:
+      - weavedemo_backoffice
     hostname: user
     restart: always
     cap_drop:
@@ -163,6 +195,8 @@ services:
       - ZIPKIN=http://zipkin:9411/api/v1/spans
   user-db:
     image: weaveworksdemos/user-db
+    networks:
+      - weavedemo_backoffice
     hostname: user-db
     restart: always
     cap_drop:
@@ -176,6 +210,8 @@ services:
       - /tmp:rw,noexec,nosuid
   zipkin:
     image: openzipkin/zipkin
+    networks:
+      - weavedemo_backoffice
     hostname: zipkin
     restart: always
     cap_drop:
@@ -191,8 +227,14 @@ services:
       - "9411:9411"
 #  user-sim:
 #    image: weaveworksdemos/load-test
+#    networks:
+#     - weavedemo_backoffice
 #    cap_drop:
 #      - all
 #    read_only: true
 #    hostname: user-simulator
 #    command: "-d 60 -r 200 -c 2 -h edge-router"
+
+networks:
+   weavedemo_backoffice:
+    driver: bridge
