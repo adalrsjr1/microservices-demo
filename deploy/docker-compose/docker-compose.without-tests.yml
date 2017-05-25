@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
   front-end:
@@ -156,8 +156,7 @@ services:
       - weavedemo_backoffice
     restart: always
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5672"
     cap_drop:
       - all
     cap_add:

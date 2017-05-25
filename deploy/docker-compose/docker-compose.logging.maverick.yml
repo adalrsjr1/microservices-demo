@@ -1,0 +1,146 @@
+version: '3'
+services:
+  fluentd:
+    image: adalrsjr1/fluentd
+    networks:
+      - maverick
+      - maverick-logging
+    ports:
+      - "9880:9880"
+      - "24224:24224"
+      - "24220:24220"
+    environment:
+      - RABBITMQ=rabbitmq-maverick
+      - ELASTIC_SEARCH=elasticsearch
+  rabbitmq-maverick:
+    image: rabbitmq:3.6-management
+    hostname: rabbitmq
+    networks:
+      - maverick
+      - maverick-logging
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+  front-end:
+    logging:
+      driver: fluentd
+      options: 
+        fluentd-address: "tcp://kay.cs.ubc.ca:24224"
+        fluentd-async-connect: "true"
+    depends_on:
+      - fluentd
+  edge-router:
+    logging:
+      driver: fluentd
+      options: 
+        fluentd-address: "tcp://kay.cs.ubc.ca:24224"
+        fluentd-async-connect: "true"
+    depends_on:
+      - fluentd
+  catalogue:
+    logging:
+      driver: fluentd
+      options: 
+        fluentd-address: "tcp://kay.cs.ubc.ca:24224"
+        fluentd-async-connect: "true"
+    depends_on:
+      - fluentd
+  catalogue-db:
+    logging:
+      driver: fluentd
+      options: 
+        fluentd-address: "tcp://kay.cs.ubc.ca:24224"
+        fluentd-async-connect: "true"
+    depends_on:
+      - fluentd
+  carts:
+    logging:
+      driver: fluentd
+      options: 
+        fluentd-address: "tcp://kay.cs.ubc.ca:24224"
+        fluentd-async-connect: "true"
+    depends_on:
+      - fluentd
+  carts-db:
+    logging:
+      driver: fluentd
+      options: 
+        fluentd-address: "tcp://kay.cs.ubc.ca:24224"
+        fluentd-async-connect: "true"
+    depends_on:
+      - fluentd
+  orders:
+    logging:
+      driver: fluentd
+      options: 
+        fluentd-address: "tcp://kay.cs.ubc.ca:24224"
+        fluentd-async-connect: "true"
+    depends_on:
+      - fluentd
+  orders-db:
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: "tcp://kay.cs.ubc.ca:24224"
+        fluentd-async-connect: "true"
+    depends_on:
+      - fluentd
+  shipping:
+    logging:
+      driver: fluentd
+      options: 
+        fluentd-address: "tcp://kay.cs.ubc.ca:24224"
+        fluentd-async-connect: "true"
+    depends_on:
+      - fluentd
+  queue-master:
+    logging:
+      driver: fluentd
+      options: 
+        fluentd-address: "tcp://kay.cs.ubc.ca:24224"
+        fluentd-async-connect: "true"
+    depends_on:
+      - fluentd
+  rabbitmq:
+    logging:
+      driver: fluentd
+      options: 
+        fluentd-address: "tcp://kay.cs.ubc.ca:24224"
+        fluentd-async-connect: "true"
+    depends_on:
+      - fluentd
+  payment:
+    logging:
+      driver: fluentd
+      options: 
+        fluentd-address: "tcp://kay.cs.ubc.ca:24224"
+        fluentd-async-connect: "true"
+    depends_on:
+      - fluentd
+  user:
+    logging:
+      driver: fluentd
+      options: 
+        fluentd-address: "tcp://kay.cs.ubc.ca:24224"
+        fluentd-async-connect: "true"
+    depends_on:
+      - fluentd
+  user-db:
+    logging:
+      driver: fluentd
+      options: 
+        fluentd-address: "tcp://kay.cs.ubc.ca:24224"
+        fluentd-async-connect: "true"
+    depends_on:
+      - fluentd
+#  user-sim:
+#    logging:
+#      driver: fluentd
+#    depends_on:
+#      - fluentd
+
+networks:
+  maverick:
+    driver: bridge
+  maverick-logging:
+    driver: bridge
