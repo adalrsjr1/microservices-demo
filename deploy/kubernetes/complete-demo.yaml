@@ -720,10 +720,12 @@ metadata:
     name: zipkin-mysql
   namespace: zipkin
 spec:
+  type: NodePort
   ports:
     # the port that this service should serve on
   - port: 3306
     targetPort: 3306
+    nodePort: 30306
   selector:
     name: zipkin-mysql
 
