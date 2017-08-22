@@ -1,5 +1,14 @@
 version: '2'
 
+# to test against minikube it is necessary redirect the calls
+# to VirtualBox
+#
+# sudo iptables -t nat -I PREROUTING -p tcp -d 172.17.0.0/24 --dport 30001 -j DNAT --to-destination 192.168.99.100:30001
+#
+# if it not works try free the routing by using:
+#
+# sudo sysctl -w net.ipv4.conf.<INTERFACE>.route_localnet=1
+
 services:
   user-sim:
     image: weaveworksdemos/load-test
